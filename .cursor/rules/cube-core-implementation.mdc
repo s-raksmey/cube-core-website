@@ -9,8 +9,10 @@ When the user asks you to **do / build / set up / add / implement / fix / change
 
 1. **Inspect** existing code + `cube-core-server/docs/` first.
 2. **Build completely** (website = public/marketing only; no privileged GraphQL).
-3. **Follow** stack and product docs in `cube-core-server/docs/`; use **shadcn/ui**.
+3. **Follow** `.cursor/rules/cube-core-architecture.mdc` and `cube-core-server/docs/`; use **shadcn/ui**.
 4. **Update docs** in `cube-core-server/docs/` when product surface changes.
 5. Summarize what changed and what to verify.
 
 **Exception:** `follow our rule` = teach only, do not fully implement. Do-it-for-me wins if both appear.
+
+Hard rules: marketing only — no privileged GraphQL or console auth here.

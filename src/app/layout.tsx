@@ -6,12 +6,12 @@ import "./globals.css";
 const inter = localFont({
   src: [
     {
-      path: "../public/fonts/Inter-VariableFont_opsz,wght.ttf",
+      path: "../../public/fonts/Inter-VariableFont_opsz,wght.ttf",
       weight: "100 900",
       style: "normal",
     },
     {
-      path: "../public/fonts/Inter-Italic-VariableFont_opsz,wght.ttf",
+      path: "../../public/fonts/Inter-Italic-VariableFont_opsz,wght.ttf",
       weight: "100 900",
       style: "italic",
     },
@@ -30,7 +30,9 @@ export const metadata: Metadata = {
   description: "Cube Core platform",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
