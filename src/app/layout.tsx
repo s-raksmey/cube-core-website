@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Geist_Mono } from "next/font/google";
+import { AppApolloProvider } from "@/components/providers/apollo-provider";
 import "./globals.css";
 
 const inter = localFont({
@@ -39,7 +40,7 @@ export default function RootLayout({
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
-        {children}
+        <AppApolloProvider>{children}</AppApolloProvider>
       </body>
     </html>
   );
