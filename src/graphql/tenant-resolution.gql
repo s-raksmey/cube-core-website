@@ -1,0 +1,19 @@
+query LocalDevelopmentTenant {
+  localDevelopmentTenant {
+    id
+    name
+    slug
+  }
+}
+
+query TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {
+  tenantByHostname(hostname: $hostname, purpose: $purpose) {
+    id
+    name
+    slug
+    type
+    status
+    managementDomain
+    websiteDomain
+  }
+}
