@@ -14,10 +14,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n  }\n}": typeof types.LocalDevelopmentTenantDocument,
+    "query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}": typeof types.LocalDevelopmentTenantDocument,
 };
 const documents: Documents = {
-    "query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n  }\n}": types.LocalDevelopmentTenantDocument,
+    "query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}": types.LocalDevelopmentTenantDocument,
 };
 
 /**
@@ -37,7 +37,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n  }\n}"): (typeof documents)["query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n  }\n}"];
+export function graphql(source: "query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}"): (typeof documents)["query LocalDevelopmentTenant {\n  localDevelopmentTenant {\n    id\n    name\n    slug\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}\n\nquery TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {\n  tenantByHostname(hostname: $hostname, purpose: $purpose) {\n    id\n    name\n    slug\n    type\n    status\n    managementDomain\n    websiteDomain\n    websiteLogoUrl\n    publicWebsiteFaviconUrl\n    openGraphImageUrl\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

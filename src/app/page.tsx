@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { headers } from "next/headers";
 import { TenantWebsiteUnavailable } from "@/components/tenant-unavailable";
 import {
@@ -16,7 +17,7 @@ function isLocalHost(hostHeader: string | null) {
 async function PublicTenantSite() {
   const tenant = await tenantForRequest();
   if (!tenant) return <TenantWebsiteUnavailable />;
-  return <TenantLanding name={tenant.name} />;
+  return <TenantLanding tenant={tenant} />;
 }
 
 async function tenantForRequest(
@@ -42,19 +43,30 @@ async function tenantForRequest(
 
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await tenantForRequest();
+  const assetUrl = tenant?.publicWebsiteFaviconUrl
+    ? publicAssetUrl(tenant.publicWebsiteFaviconUrl)
+    : undefined;
   return {
     title: tenant?.name ?? "Website unavailable",
     description: tenant ? `Official website of ${tenant.name}` : "Tenant website unavailable",
+    icons: assetUrl ? { icon: assetUrl } : undefined,
+    openGraph: tenant?.openGraphImageUrl ? { images: [publicAssetUrl(tenant.openGraphImageUrl)] } : undefined,
   };
 }
 
-function TenantLanding({ name }: { name: string }) {
+function publicAssetUrl(path: string) {
+  const base = (process.env.GRAPHQL_SERVER_URL ?? "http://localhost:4000/graphql").replace(/\/graphql$/, "");
+  return `${base}${path}`;
+}
+
+function TenantLanding({ tenant }: { tenant: NonNullable<Awaited<ReturnType<typeof tenantForRequest>>> }) {
+  const name = tenant.name;
   return (
     <main className="min-h-svh bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex h-16 max-w-7xl items-center px-6">
-          <Link href="/" className="text-lg font-semibold tracking-tight" aria-label={`${name} home`}>
-            {name}
+          <Link href="/" className="flex items-center gap-3 text-lg font-semibold tracking-tight" aria-label={`${name} home`}>
+            {tenant.websiteLogoUrl ? <Image src={publicAssetUrl(tenant.websiteLogoUrl)} alt={`${name} logo`} width={160} height={40} unoptimized className="h-10 w-auto object-contain" /> : name}
           </Link>
         </div>
       </header>
