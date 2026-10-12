@@ -43,7 +43,7 @@ async function tenantForRequest(
 export async function generateMetadata(): Promise<Metadata> {
   const tenant = await tenantForRequest();
   return {
-    title: tenant ? `${tenant.name} | Cube Core` : "Website unavailable | Cube Core",
+    title: tenant?.name ?? "Website unavailable",
     description: tenant ? `Official website of ${tenant.name}` : "Tenant website unavailable",
   };
 }
