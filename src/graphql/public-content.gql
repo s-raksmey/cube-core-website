@@ -1,0 +1,32 @@
+query PublicWebsiteCategories($tenantId: ID!) {
+  publicWebsiteCategories(tenantId: $tenantId) {
+    id slug name translations { locale name }
+    subcategories { slug translations { locale name } }
+  }
+}
+
+query PublicWebsiteTags($tenantId: ID!) {
+  publicWebsiteTags(tenantId: $tenantId) {
+    slug name translations { locale name }
+  }
+}
+
+query PublicWebsiteArticles($tenantId: ID!, $categorySlug: String, $subcategorySlug: String, $tagSlug: String, $search: String, $featured: Boolean, $breaking: Boolean, $page: Int, $pageSize: Int) {
+  publicWebsiteArticles(tenantId: $tenantId, categorySlug: $categorySlug, subcategorySlug: $subcategorySlug, tagSlug: $tagSlug, search: $search, featured: $featured, breaking: $breaking, page: $page, pageSize: $pageSize) {
+    items {
+      id title slug summary category { id slug name translations { locale name } }
+      subcategorySlug isBreaking isFeatured featuredImageUrl publishedAt
+      translations { locale title summary }
+    }
+    total page pageSize
+  }
+}
+
+query PublicWebsiteArticle($tenantId: ID!, $slug: String!) {
+  publicWebsiteArticle(tenantId: $tenantId, slug: $slug) {
+    id title slug summary content category { id slug name translations { locale name } }
+    subcategorySlug isBreaking isFeatured featuredImageUrl publishedAt authorName
+    translations { locale title summary content }
+    tags { slug name translations { locale name } }
+  }
+}

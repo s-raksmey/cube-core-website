@@ -1,29 +1,24 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Geist_Mono } from "next/font/google";
-import { AppApolloProvider } from "@/components/providers/apollo-provider";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 const inter = localFont({
   src: [
-    {
-      path: "../../public/fonts/Inter-VariableFont_opsz,wght.ttf",
-      weight: "100 900",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/Inter-Italic-VariableFont_opsz,wght.ttf",
-      weight: "100 900",
-      style: "italic",
-    },
+    { path: "../../public/fonts/Inter-VariableFont_opsz,wght.ttf", weight: "100 900", style: "normal" },
+    { path: "../../public/fonts/Inter-Italic-VariableFont_opsz,wght.ttf", weight: "100 900", style: "italic" },
   ],
   variable: "--font-inter",
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const khmerDigital = localFont({
+  src: [
+    { path: "../../public/fonts/KhmerDigital-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../../public/fonts/KhmerDigital-Bold.ttf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-khmer-digital",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -31,16 +26,19 @@ export const metadata: Metadata = {
   description: "Cube Core platform",
 };
 
-export default function RootLayout({
+export const instant = false;
+
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = (await cookies()).get("site-locale")?.value === "km" ? "km" : "en";
   return (
     <html
-      lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      lang={locale}
+      className={`${inter.variable} ${khmerDigital.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
-        <AppApolloProvider>{children}</AppApolloProvider>
+        {children}
       </body>
     </html>
   );
