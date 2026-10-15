@@ -1,12 +1,20 @@
 import { StoryArchive } from "@/components/site/story-archive";
+import { StoryRouteLoading } from "@/components/site/story-route-loading";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { getArticles, getTags } from "@/lib/public-content";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
 
-export default async function TagPage({ params, searchParams }: {
+type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ page?: string }>;
-}) {
+};
+
+export default function TagPage({ params, searchParams }: Props) {
+  return <Suspense fallback={<StoryRouteLoading />}><TagStories params={params} searchParams={searchParams} /></Suspense>;
+}
+
+async function TagStories({ params, searchParams }: Props) {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
   const [{ slug }, query, locale] = await Promise.all([params, searchParams, getSiteLocale()]);

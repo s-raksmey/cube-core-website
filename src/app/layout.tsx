@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { cookies } from "next/headers";
 import "./globals.css";
 
 const inter = localFont({
@@ -12,12 +11,11 @@ const inter = localFont({
   display: "swap",
 });
 
-const khmerDigital = localFont({
-  src: [
-    { path: "../../public/fonts/KhmerDigital-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../../public/fonts/KhmerDigital-Bold.ttf", weight: "700", style: "normal" },
-  ],
-  variable: "--font-khmer-digital",
+const notoSansKhmer = localFont({
+  src: "../../public/fonts/NotoSansKhmer-VariableFont_wdth,wght.ttf",
+  variable: "--font-noto-sans-khmer",
+  weight: "100 900",
+  style: "normal",
   display: "swap",
 });
 
@@ -26,17 +24,23 @@ export const metadata: Metadata = {
   description: "Cube Core platform",
 };
 
-export const instant = false;
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const locale = (await cookies()).get("site-locale")?.value === "km" ? "km" : "en";
   return (
     <html
-      lang={locale}
-      className={`${inter.variable} ${khmerDigital.variable} h-full antialiased`}
+      lang="km"
+      suppressHydrationWarning
+      className={`${inter.variable} ${notoSansKhmer.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `try {
+          const dark = localStorage.getItem("cube-site-theme") === "dark";
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+          document.documentElement.lang = location.pathname === "/en" || location.pathname.startsWith("/en/") ? "en" : "km";
+        } catch {}` }} />
+      </head>
       <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         {children}
       </body>

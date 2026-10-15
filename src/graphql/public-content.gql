@@ -15,7 +15,8 @@ query PublicWebsiteArticles($tenantId: ID!, $categorySlug: String, $subcategoryS
   publicWebsiteArticles(tenantId: $tenantId, categorySlug: $categorySlug, subcategorySlug: $subcategorySlug, tagSlug: $tagSlug, search: $search, featured: $featured, breaking: $breaking, page: $page, pageSize: $pageSize) {
     items {
       id title slug summary category { id slug name translations { locale name } }
-      subcategorySlug isBreaking isFeatured featuredImageUrl publishedAt
+      subcategorySlug subcategory { slug translations { locale name } }
+      isBreaking isFeatured featuredImageUrl publishedAt viewCount shareCount
       translations { locale title summary }
     }
     total page pageSize
@@ -24,9 +25,34 @@ query PublicWebsiteArticles($tenantId: ID!, $categorySlug: String, $subcategoryS
 
 query PublicWebsiteArticle($tenantId: ID!, $slug: String!) {
   publicWebsiteArticle(tenantId: $tenantId, slug: $slug) {
-    id title slug summary content category { id slug name translations { locale name } }
-    subcategorySlug isBreaking isFeatured featuredImageUrl publishedAt authorName
+    id title slug summary content viewCount shareCount category { id slug name translations { locale name } }
+    subcategorySlug subcategory { slug translations { locale name } }
+    isBreaking isFeatured featuredImageUrl publishedAt authorName
     translations { locale title summary content }
     tags { slug name translations { locale name } }
   }
+}
+
+query PublicWebsiteRelatedArticles($tenantId: ID!, $slug: String!, $limit: Int) {
+  publicWebsiteRelatedArticles(tenantId: $tenantId, slug: $slug, limit: $limit) {
+    id title slug summary category { id slug name translations { locale name } }
+    subcategorySlug subcategory { slug translations { locale name } }
+    isBreaking featuredImageUrl publishedAt viewCount shareCount translations { locale title summary }
+  }
+}
+
+query PublicWebsitePopularArticles($tenantId: ID!, $limit: Int) {
+  publicWebsitePopularArticles(tenantId: $tenantId, limit: $limit) {
+    id title slug summary viewCount shareCount category { id slug name translations { locale name } }
+    subcategorySlug subcategory { slug translations { locale name } }
+    isBreaking featuredImageUrl publishedAt translations { locale title summary }
+  }
+}
+
+mutation RecordPublicWebsiteArticleView($hostname: String!, $articleId: ID!, $visitorId: ID!) {
+  recordPublicWebsiteArticleView(hostname: $hostname, articleId: $articleId, visitorId: $visitorId)
+}
+
+mutation RecordPublicWebsiteArticleShare($hostname: String!, $articleId: ID!, $visitorId: ID!, $platform: ArticleSharePlatform!) {
+  recordPublicWebsiteArticleShare(hostname: $hostname, articleId: $articleId, visitorId: $visitorId, platform: $platform)
 }

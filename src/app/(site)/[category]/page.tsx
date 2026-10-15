@@ -1,13 +1,21 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { StoryArchive } from "@/components/site/story-archive";
+import { StoryRouteLoading } from "@/components/site/story-route-loading";
 import { getArticles, getCategories } from "@/lib/public-content";
 import { categoryName } from "@/lib/public-locale";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
 
-export default async function CategoryPage({ params, searchParams }: {
+type Props = {
   params: Promise<{ category: string }>;
   searchParams: Promise<{ page?: string }>;
-}) {
+};
+
+export default function CategoryPage({ params, searchParams }: Props) {
+  return <Suspense fallback={<StoryRouteLoading />}><CategoryStories params={params} searchParams={searchParams} /></Suspense>;
+}
+
+async function CategoryStories({ params, searchParams }: Props) {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
   const [{ category: slug }, query, locale, categories] = await Promise.all([params, searchParams, getSiteLocale(), getCategories(tenant.id)]);

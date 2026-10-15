@@ -1,14 +1,13 @@
 import "server-only";
 
-import { cache } from "react";
-import { headers } from "next/headers";
-import { cookies } from "next/headers";
 import type { Locale } from "@/lib/public-locale";
 import {
   hostnameFromHostHeader,
   resolveLocalDevelopmentTenant,
   resolvePublicTenant,
 } from "@/lib/tenant-resolution";
+import { headers } from "next/headers";
+import { cache } from "react";
 
 export const getPublicTenant = cache(async () => {
   const hostname = hostnameFromHostHeader((await headers()).get("host"));
@@ -30,5 +29,5 @@ export function publicAssetUrl(path: string | null | undefined) {
 }
 
 export async function getSiteLocale(): Promise<Locale> {
-  return (await cookies()).get("site-locale")?.value === "km" ? "km" : "en";
+  return (await headers()).get("x-site-locale") === "en" ? "en" : "km";
 }

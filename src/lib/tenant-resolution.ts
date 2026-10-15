@@ -1,12 +1,12 @@
 import "server-only";
 
-import { print } from "graphql";
 import {
-  TenantByHostnameDocument,
   LocalDevelopmentTenantDocument,
+  TenantByHostnameDocument,
   type LocalDevelopmentTenantQuery,
   type TenantByHostnameQuery,
 } from "@/lib/apollo/generated/graphql";
+import { print } from "graphql";
 
 export type PublicTenant = NonNullable<
   TenantByHostnameQuery["tenantByHostname"]
@@ -24,7 +24,9 @@ export function hostnameFromHostHeader(hostHeader: string | null) {
   }
 }
 
-export async function resolvePublicTenant(hostname: string): Promise<PublicTenant | null> {
+export async function resolvePublicTenant(
+  hostname: string,
+): Promise<PublicTenant | null> {
   const serverUrl =
     process.env.GRAPHQL_SERVER_URL ?? "http://localhost:4000/graphql";
   const response = await fetch(serverUrl, {
@@ -49,8 +51,7 @@ export async function resolvePublicTenant(hostname: string): Promise<PublicTenan
   return payload.data.tenantByHostname;
 }
 
-export async function resolveLocalDevelopmentTenant(
-): Promise<PublicTenantIdentity | null> {
+export async function resolveLocalDevelopmentTenant(): Promise<PublicTenantIdentity | null> {
   const serverUrl =
     process.env.GRAPHQL_SERVER_URL ?? "http://localhost:4000/graphql";
   const response = await fetch(serverUrl, {

@@ -1,8 +1,16 @@
 import { StoryArchive } from "@/components/site/story-archive";
+import { StoryRouteLoading } from "@/components/site/story-route-loading";
+import { Suspense } from "react";
 import { getArticles } from "@/lib/public-content";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
 
-export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string; page?: string }> }) {
+type Props = { searchParams: Promise<{ q?: string; page?: string }> };
+
+export default function SearchPage({ searchParams }: Props) {
+  return <Suspense fallback={<StoryRouteLoading />}><SearchStories searchParams={searchParams} /></Suspense>;
+}
+
+async function SearchStories({ searchParams }: Props) {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
   const [params, locale] = await Promise.all([searchParams, getSiteLocale()]);

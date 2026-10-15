@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   async rewrites() {
     const serverOrigin = new URL(process.env.GRAPHQL_SERVER_URL ?? "http://localhost:4000/graphql").origin;
-    return [{ source: "/tenant-assets/:path*", destination: `${serverOrigin}/storage/:path*` }];
+    return [
+      { source: "/tenant-assets/:path*", destination: `${serverOrigin}/storage/:path*` },
+      { source: "/storage/:path*", destination: `${serverOrigin}/storage/:path*` },
+    ];
   },
   turbopack: {
     rules: {
