@@ -13,25 +13,38 @@ import { StoryRouteLoading } from "@/components/site/story-route-loading";
 import { getArticle, getRelatedArticles } from "@/lib/public-content";
 import { articleContent, articleText, categoryName, hrefFor, subcategoryName } from "@/lib/public-locale";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
+import { TenantWebsiteMaintenance } from "@/components/tenant-website-maintenance";
+import { articleMetadata } from "@/lib/site-metadata";
+import { publicAssetUrl } from "@/lib/public-site";
+import { RequestTimeMarker } from "@/components/site/request-time-marker";
 
 type Props = { params: Promise<{ category: string; topic: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const [tenant, { category, topic, slug }] = await Promise.all([getPublicTenant(), params]);
-  if (!tenant) return {};
+  if (!tenant || tenant.generalSettings?.website.maintenanceMode) return { robots: { index: false, follow: false } };
   const article = await getArticle({ tenantId: tenant.id, slug }).catch(() => null);
-  if (!article || article.category.slug !== category || article.subcategorySlug !== topic) return {};
-  return { title: `${article.title} | ${tenant.name}`, description: article.summary ?? undefined,
-    openGraph: article.featuredImageUrl ? { images: [article.featuredImageUrl] } : undefined };
+  if (!article || article.category.slug !== category || article.subcategorySlug !== topic) return { robots: { index: false, follow: false } };
+  const seo = tenant.generalSettings?.seo;
+  const site = { name: tenant.generalSettings?.siteName || tenant.name,
+    description: tenant.generalSettings?.siteDescription ?? "",
+    seo: seo ? { ...seo, defaultOgImageUrl: publicAssetUrl(seo.defaultOgImageUrl) } : seo,
+    image: publicAssetUrl(seo?.defaultOgImageUrl) ?? "/news-hero.webp" };
+  const locale = await getSiteLocale();
+  const text = articleText(article, locale);
+  return articleMetadata(site, { title: text.title, summary: text.summary,
+    featuredImageUrl: article.featuredImageUrl?.startsWith("/storage/")
+      ? publicAssetUrl(article.featuredImageUrl) : article.featuredImageUrl });
 }
 
 export default function ArticlePage({ params }: Props) {
-  return <Suspense fallback={<StoryRouteLoading />}><ArticleStory params={params} /></Suspense>;
+  return <><RequestTimeMarker /><Suspense fallback={<StoryRouteLoading />}><ArticleStory params={params} /></Suspense></>;
 }
 
 async function ArticleStory({ params }: Props) {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
+  if (tenant.generalSettings?.website.maintenanceMode) return <TenantWebsiteMaintenance siteName={tenant.generalSettings.siteName} message={tenant.generalSettings.website.maintenanceMessage} locale={await getSiteLocale()} />;
   const [{ category, topic, slug }, locale] = await Promise.all([params, getSiteLocale()]);
   const article = await getArticle({ tenantId: tenant.id, slug });
   if (!article || article.category.slug !== category || article.subcategorySlug !== topic) notFound();

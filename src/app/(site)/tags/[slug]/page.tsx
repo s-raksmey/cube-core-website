@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getArticles, getTags } from "@/lib/public-content";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
+import { TenantWebsiteMaintenance } from "@/components/tenant-website-maintenance";
+import { RequestTimeMarker } from "@/components/site/request-time-marker";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -11,12 +13,13 @@ type Props = {
 };
 
 export default function TagPage({ params, searchParams }: Props) {
-  return <Suspense fallback={<StoryRouteLoading />}><TagStories params={params} searchParams={searchParams} /></Suspense>;
+  return <><RequestTimeMarker /><Suspense fallback={<StoryRouteLoading />}><TagStories params={params} searchParams={searchParams} /></Suspense></>;
 }
 
 async function TagStories({ params, searchParams }: Props) {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
+  if (tenant.generalSettings?.website.maintenanceMode) return <TenantWebsiteMaintenance siteName={tenant.generalSettings.siteName} message={tenant.generalSettings.website.maintenanceMessage} locale={await getSiteLocale()} />;
   const [{ slug }, query, locale] = await Promise.all([params, searchParams, getSiteLocale()]);
   if (slug.length > 120 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) notFound();
   const page = Math.max(1, Math.min(100000, Number.parseInt(query.page ?? "1", 10) || 1));

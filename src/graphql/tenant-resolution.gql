@@ -2,10 +2,33 @@ query LocalDevelopmentTenant {
   localDevelopmentTenant {
     id
     name
-    slug
     websiteLogoUrl
     publicWebsiteFaviconUrl
-    openGraphImageUrl
+  }
+  publicGeneralSettings(hostname: "localhost") {
+    tenantId
+    siteName
+    siteDescription
+    contactEmail
+    phone
+    secondaryPhone
+    address
+    website {
+      maintenanceMode
+      maintenanceMessage
+    }
+    socialLinks {
+      platform
+      url
+    }
+    seo {
+      allowIndexing
+      metaTitle
+      metaDescription
+      ogTitle
+      ogDescription
+      defaultOgImageUrl
+    }
   }
 }
 
@@ -13,13 +36,33 @@ query TenantByHostname($hostname: String!, $purpose: TenantDomainPurpose!) {
   tenantByHostname(hostname: $hostname, purpose: $purpose) {
     id
     name
-    slug
-    type
     status
-    managementDomain
-    websiteDomain
     websiteLogoUrl
     publicWebsiteFaviconUrl
-    openGraphImageUrl
+  }
+  publicGeneralSettings(hostname: $hostname) {
+    tenantId
+    siteName
+    siteDescription
+    contactEmail
+    phone
+    secondaryPhone
+    address
+    website {
+      maintenanceMode
+      maintenanceMessage
+    }
+    socialLinks {
+      platform
+      url
+    }
+    seo {
+      allowIndexing
+      metaTitle
+      metaDescription
+      ogTitle
+      ogDescription
+      defaultOgImageUrl
+    }
   }
 }

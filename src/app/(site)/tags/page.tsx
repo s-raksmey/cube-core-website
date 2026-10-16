@@ -2,10 +2,18 @@ import Link from "next/link";
 import { getTags } from "@/lib/public-content";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
 import { hrefFor } from "@/lib/public-locale";
+import { TenantWebsiteMaintenance } from "@/components/tenant-website-maintenance";
+import { RequestTimeMarker } from "@/components/site/request-time-marker";
+import { Suspense } from "react";
 
-export default async function TagsPage() {
+export default function TagsPage() {
+  return <><RequestTimeMarker /><Suspense fallback={null}><TagsContent /></Suspense></>;
+}
+
+async function TagsContent() {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
+  if (tenant.generalSettings?.website.maintenanceMode) return <TenantWebsiteMaintenance siteName={tenant.generalSettings.siteName} message={tenant.generalSettings.website.maintenanceMessage} locale={await getSiteLocale()} />;
   const [tags, locale] = await Promise.all([getTags(tenant.id), getSiteLocale()]);
   return <main className="site-shell flex-1 py-7 pb-16">
     <nav className="mb-5 text-sm text-slate-500" aria-label="Breadcrumb"><Link href={hrefFor("/", locale)} className="hover:text-blue-600">{locale === "km" ? "ទំព័រដើម" : "Home"}</Link><span className="mx-2">/</span><span className="text-slate-900 dark:text-white">{locale === "km" ? "ស្លាក" : "Tags"}</span></nav>

@@ -5,6 +5,8 @@ import { StoryRouteLoading } from "@/components/site/story-route-loading";
 import { getArticles, getCategories } from "@/lib/public-content";
 import { categoryName, subcategoryName } from "@/lib/public-locale";
 import { getPublicTenant, getSiteLocale } from "@/lib/public-site";
+import { TenantWebsiteMaintenance } from "@/components/tenant-website-maintenance";
+import { RequestTimeMarker } from "@/components/site/request-time-marker";
 
 type Props = {
   params: Promise<{ category: string; topic: string }>;
@@ -12,12 +14,13 @@ type Props = {
 };
 
 export default function TopicPage({ params, searchParams }: Props) {
-  return <Suspense fallback={<StoryRouteLoading />}><TopicStories params={params} searchParams={searchParams} /></Suspense>;
+  return <><RequestTimeMarker /><Suspense fallback={<StoryRouteLoading />}><TopicStories params={params} searchParams={searchParams} /></Suspense></>;
 }
 
 async function TopicStories({ params, searchParams }: Props) {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
+  if (tenant.generalSettings?.website.maintenanceMode) return <TenantWebsiteMaintenance siteName={tenant.generalSettings.siteName} message={tenant.generalSettings.website.maintenanceMessage} locale={await getSiteLocale()} />;
   const [{ category: categorySlug, topic: topicSlug }, query, locale, categories] = await Promise.all([params, searchParams, getSiteLocale(), getCategories(tenant.id)]);
   const category = categories.find((item) => item.slug === categorySlug);
   const topic = category?.subcategories.find((item) => item.slug === topicSlug);

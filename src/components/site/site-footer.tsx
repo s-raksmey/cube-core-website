@@ -2,14 +2,32 @@ import { categoryName, hrefFor, type Locale } from "@/lib/public-locale";
 import type { PublicCategory } from "@/types/public-content";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import type { SocialPlatform } from "@/lib/apollo/generated/graphql";
+
+const socialNames: Record<SocialPlatform, string> = {
+  FACEBOOK: "Facebook", TELEGRAM: "Telegram", YOUTUBE: "YouTube", TIKTOK: "TikTok",
+  INSTAGRAM: "Instagram", X: "X", LINKEDIN: "LinkedIn",
+};
 
 export function SiteFooter({
   name,
+  description,
+  contactEmail,
+  phone,
+  secondaryPhone,
+  address,
   categories,
+  socialLinks,
   locale,
 }: {
   name: string;
+  description: string;
+  contactEmail: string;
+  phone: string;
+  secondaryPhone: string | null;
+  address: string;
   categories: PublicCategory[];
+  socialLinks: { platform: SocialPlatform; url: string }[];
   locale: Locale;
 }) {
   return (
@@ -23,10 +41,16 @@ export function SiteFooter({
             {name}
           </Link>
           <p className="mt-3 max-w-md text-sm leading-7 text-slate-400">
-            {locale === "km"
+            {description || (locale === "km"
               ? "ព័ត៌មានថ្មីៗពីសហគមន៍របស់អ្នក។"
-              : "Latest stories and reporting from your community."}
+              : "Latest stories and reporting from your community.")}
           </p>
+          {contactEmail || phone || secondaryPhone || address ? <address className="mt-4 grid gap-1 text-sm not-italic text-slate-400">
+            {contactEmail ? <a href={`mailto:${contactEmail}`} className="w-fit hover:text-white">{contactEmail}</a> : null}
+            {phone ? <a href={`tel:${phone.replace(/[^+\d]/g, "")}`} className="w-fit hover:text-white">{phone}</a> : null}
+            {secondaryPhone ? <a href={`tel:${secondaryPhone.replace(/[^+\d]/g, "")}`} className="w-fit hover:text-white">{secondaryPhone}</a> : null}
+            {address ? <span>{address}</span> : null}
+          </address> : null}
         </div>
         <div>
           <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-white">
@@ -63,6 +87,14 @@ export function SiteFooter({
               {locale === "km" ? "ស្លាក" : "Tags"}
             </Link>
           </nav>
+          {socialLinks.length ? <div className="mt-7">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-white">{locale === "km" ? "បណ្ដាញសង្គម" : "Follow us"}</h2>
+            <nav aria-label={locale === "km" ? "បណ្ដាញសង្គម" : "Social links"} className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+              {socialLinks.map((link) => <a key={link.platform} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-white">
+                {socialNames[link.platform]}<ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </a>)}
+            </nav>
+          </div> : null}
         </div>
       </div>
       <div className="border-t border-slate-800 px-4 py-5 text-center text-xs text-slate-500">

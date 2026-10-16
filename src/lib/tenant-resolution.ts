@@ -7,13 +7,14 @@ import {
   type TenantByHostnameQuery,
 } from "@/lib/apollo/generated/graphql";
 import { print } from "graphql";
+import { combineResolvedTenant } from "@/lib/resolved-tenant";
 
 export type PublicTenant = NonNullable<
   TenantByHostnameQuery["tenantByHostname"]
->;
+> & { generalSettings: TenantByHostnameQuery["publicGeneralSettings"] };
 export type PublicTenantIdentity = NonNullable<
   LocalDevelopmentTenantQuery["localDevelopmentTenant"]
->;
+> & { generalSettings: LocalDevelopmentTenantQuery["publicGeneralSettings"] };
 
 export function hostnameFromHostHeader(hostHeader: string | null) {
   if (!hostHeader || /[\/@?#\s]/.test(hostHeader)) return null;
@@ -48,7 +49,7 @@ export async function resolvePublicTenant(
   if (payload.errors?.length || !payload.data) {
     throw new Error("Tenant service could not resolve this website");
   }
-  return payload.data.tenantByHostname;
+  return combineResolvedTenant(payload.data.tenantByHostname, payload.data.publicGeneralSettings);
 }
 
 export async function resolveLocalDevelopmentTenant(): Promise<PublicTenantIdentity | null> {
@@ -73,5 +74,5 @@ export async function resolveLocalDevelopmentTenant(): Promise<PublicTenantIdent
   if (payload.errors?.length || !payload.data) {
     throw new Error("Tenant service could not resolve this website");
   }
-  return payload.data.localDevelopmentTenant;
+  return combineResolvedTenant(payload.data.localDevelopmentTenant, payload.data.publicGeneralSettings);
 }

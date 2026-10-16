@@ -9,11 +9,19 @@ import { ArticleViewCount } from "@/components/site/article-view-count";
 import { ArticleShareCount } from "@/components/site/article-share-count";
 import { SectionHeading } from "@/components/site/section-heading";
 import { SiteHero } from "@/components/site/site-hero";
+import { TenantWebsiteMaintenance } from "@/components/tenant-website-maintenance";
+import { RequestTimeMarker } from "@/components/site/request-time-marker";
+import { Suspense } from "react";
 
-export default async function HomePage() {
+export default function HomePage() {
+  return <><RequestTimeMarker /><Suspense fallback={null}><HomeContent /></Suspense></>;
+}
+
+async function HomeContent() {
   const tenant = await getPublicTenant();
   if (!tenant) return null;
   const locale = await getSiteLocale();
+  if (tenant.generalSettings?.website.maintenanceMode) return <TenantWebsiteMaintenance siteName={tenant.generalSettings.siteName} message={tenant.generalSettings.website.maintenanceMessage} locale={locale} />;
   let content;
   try {
     const [latest, featured, popular, categories] = await Promise.all([
@@ -34,7 +42,8 @@ export default async function HomePage() {
   const supporting = content.latest.filter((article) => article.id !== lead?.id).slice(0, 2);
   const popular = content.popular;
   return <main className="news-home">
-    <SiteHero name={tenant.name} slides={content.featured} locale={locale} />
+    <SiteHero name={tenant.generalSettings?.siteName || tenant.name}
+      description={tenant.generalSettings?.siteDescription ?? ""} slides={content.featured} locale={locale} />
     <div className="news-home-shell">
       <div className={`news-home-top ${popular.length ? "" : "news-home-top-empty"}`}>
         <section>

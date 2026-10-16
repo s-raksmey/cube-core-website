@@ -9,10 +9,12 @@ import { useEffect, useState } from "react";
 
 export function SiteHero({
   name,
+  description,
   slides,
   locale,
 }: {
   name: string;
+  description: string;
   slides: PublicArticleSummary[];
   locale: Locale;
 }) {
@@ -61,7 +63,7 @@ export function SiteHero({
           <p
             className={`mt-4 line-clamp-2 max-w-2xl text-pretty text-white/85 ${locale === "km" ? "text-base leading-8 sm:text-lg" : "text-base leading-7 sm:text-lg"}`}
           >
-            {copy?.summary ??
+            {copy?.summary || description ||
               (locale === "km"
                 ? "ព័ត៌មាន និងរឿងរ៉ាវថ្មីៗពីសហគមន៍របស់អ្នក។"
                 : "The latest stories and reporting from your community.")}
