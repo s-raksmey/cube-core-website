@@ -2,6 +2,8 @@ import "server-only";
 
 import {
   PublicWebsiteArticleDocument,
+  PublicWebsiteFeaturedArticlesDocument,
+  type PublicWebsiteFeaturedArticlesQuery,
   PublicWebsiteArticlesDocument,
   PublicWebsiteCategoriesDocument,
   PublicWebsitePopularArticlesDocument,
@@ -130,4 +132,8 @@ export async function recordArticleShare(
       variables,
     )
   ).recordPublicWebsiteArticleShare;
+}
+
+export async function getFeaturedArticles(tenantId: string) {
+  return (await request<PublicWebsiteFeaturedArticlesQuery>(PublicWebsiteFeaturedArticlesDocument, { tenantId })).publicWebsiteArticles.items;
 }

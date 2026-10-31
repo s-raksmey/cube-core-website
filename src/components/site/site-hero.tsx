@@ -1,119 +1,51 @@
-"use client";
-
-import { articleHref, articleText, type Locale } from "@/lib/public-locale";
-import type { PublicArticleSummary } from "@/types/public-content";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
+import { ArticleThumbnail } from "@/components/site/article-thumbnail";
+import { ArticleImage } from "@/components/site/article-image";
+import { articleHref, articleText, categoryName, type Locale } from "@/lib/public-locale";
+import type { PublicFeaturedArticle } from "@/types/public-content";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-export function SiteHero({
-  name,
-  description,
-  slides,
-  locale,
-}: {
-  name: string;
-  description: string;
-  slides: PublicArticleSummary[];
+export function SiteHero({ articles, headlines, locale }: {
+  articles: PublicFeaturedArticle[];
+  headlines: PublicFeaturedArticle[];
   locale: Locale;
 }) {
-  const [index, setIndex] = useState(0);
-  useEffect(() => {
-    if (slides.length < 2) return;
-    const timer = window.setInterval(
-      () => setIndex((current) => (current + 1) % slides.length),
-      7000,
-    );
-    return () => window.clearInterval(timer);
-  }, [slides.length]);
+  const [lead] = articles;
+  if (!lead) return null;
+  const copy = articleText(lead, locale);
+  const featuredLabel = locale === "km" ? "ព័ត៌មានពិសេស" : "Featured News";
 
-  const currentIndex = slides.length ? index % slides.length : 0;
-  const article = slides[currentIndex];
-  const copy = article ? articleText(article, locale) : null;
   return (
-    <section
-      className="relative min-h-100 overflow-hidden bg-slate-950 sm:min-h-110 lg:min-h-120"
-      aria-label={locale === "km" ? "ព័ត៌មានពិសេស" : "Featured stories"}
-    >
-      <Image
-        key={article?.id ?? "fallback"}
-        src={article?.featuredImageUrl ?? "/news-hero.webp"}
-        alt=""
-        fill
-        unoptimized
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
-      <div className="absolute inset-0 bg-linear-to-r from-slate-950/90 via-slate-950/70 to-red-950/70" />
-      <div className="relative mx-auto flex min-h-100 max-w-[1720px] flex-col justify-center px-4 pb-28 pt-10 text-white sm:min-h-110 sm:px-6 sm:pt-12 lg:min-h-120 lg:px-8 xl:px-10">
-        <div
-          key={article?.id ?? "fallback"}
-          className="min-w-0 max-w-208 motion-safe:animate-[site-slide-in_.55s_ease-out]"
-        >
-          <p className="mb-3 text-xs font-bold uppercase tracking-[.18em] text-red-200 sm:mb-4 sm:text-sm">
-            {name}
-          </p>
-          <h1
-            className={`line-clamp-2 text-pretty font-extrabold wrap-anywhere ${locale === "km" ? "text-[clamp(1.7rem,3vw,2.75rem)] leading-[1.45]" : "text-[clamp(1.85rem,3vw,3rem)] leading-[1.2]"}`}
-          >
-            {copy?.title ?? name}
-          </h1>
-          <p
-            className={`mt-4 line-clamp-2 max-w-2xl text-pretty text-white/85 ${locale === "km" ? "text-base leading-8 sm:text-lg" : "text-base leading-7 sm:text-lg"}`}
-          >
-            {copy?.summary || description ||
-              (locale === "km"
-                ? "ព័ត៌មាន និងរឿងរ៉ាវថ្មីៗពីសហគមន៍របស់អ្នក។"
-                : "The latest stories and reporting from your community.")}
-          </p>
-          {article ? (
-            <Link
-              href={articleHref(article, locale)}
-              className="mt-6 inline-flex rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm hover:bg-red-50"
-            >
-              {locale === "km" ? "អានបន្ត" : "Read story"}
-            </Link>
-          ) : null}
-        </div>
-        {slides.length > 1 ? (
-          <div className="absolute bottom-6 left-3 z-10 flex items-center gap-4 sm:left-6 lg:left-8 xl:left-10">
-            <button
-              type="button"
-              onClick={() =>
-                setIndex(
-                  (current) => (current - 1 + slides.length) % slides.length,
-                )
-              }
-              className="grid size-10 place-items-center rounded-full border border-white/30 text-white hover:bg-white/10"
-              aria-label="Previous carousel slide"
-            >
-              <ChevronLeft className="size-5" />
-            </button>
-            <div className="flex gap-2" aria-label="Carousel slides">
-              {slides.map((slide, dot) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => setIndex(dot)}
-                  className={`h-2.5 rounded-full transition-all ${dot === currentIndex ? "w-8 bg-white" : "w-2.5 bg-white/45 hover:bg-white/70"}`}
-                  aria-label={`Go to carousel slide ${dot + 1}`}
-                  aria-current={dot === currentIndex ? "true" : undefined}
-                />
+    <section aria-label={featuredLabel} className="border-b border-border pb-6">
+      <div className={`grid min-w-0 gap-6 md:gap-7 ${headlines.length ? "md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]" : ""}`}>
+        <article className="min-w-0">
+          <Link href={articleHref(lead, locale)} className="group block rounded-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+            <div className="relative aspect-video w-full overflow-hidden rounded-none bg-muted">
+              <ArticleImage src={lead.featuredImageUrl} preload sizes="(max-width: 767px) 100vw, (max-width: 1023px) 54vw, (max-width: 1720px) 65vw, 1080px" />
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span className="bg-primary px-2 py-0.5 text-xs font-bold text-primary-foreground">{categoryName(lead.category, locale)}</span>
+            </div>
+            <h1 className={`mt-3 line-clamp-3 text-pretty text-2xl font-bold wrap-anywhere text-foreground group-hover:text-primary sm:text-3xl ${locale === "km" ? "leading-relaxed" : "leading-snug"}`}>{copy.title}</h1>
+            {copy.summary ? <p className="mt-3 line-clamp-3 text-pretty text-sm leading-7 wrap-anywhere text-muted-foreground sm:text-base">{copy.summary}</p> : null}
+          </Link>
+        </article>
+        {headlines.length ? (
+          <aside className="min-w-0 md:border-l md:border-border md:pl-6">
+            <h2 className="border-b-2 border-primary pb-3 text-lg font-bold leading-relaxed text-foreground">{locale === "km" ? "ព័ត៌មានសំខាន់ៗ" : "Top Headlines"}</h2>
+            <div className="divide-y divide-border">
+              {headlines.slice(0, 4).map((article) => (
+                <article key={article.id}>
+                  <Link href={articleHref(article, locale)} className="group grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3 py-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                    <div className="min-w-0">
+                      <span className="text-xs font-bold leading-relaxed text-primary">{categoryName(article.category, locale)}</span>
+                      <h3 className={`mt-2 line-clamp-2 text-base font-bold wrap-anywhere text-foreground group-hover:text-primary ${locale === "km" ? "leading-relaxed" : "leading-snug"}`}>{articleText(article, locale).title}</h3>
+                    </div>
+                    <ArticleThumbnail src={article.featuredImageUrl} className="md:translate-y-7 lg:translate-y-0" />
+                  </Link>
+                </article>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() =>
-                setIndex((current) => (current + 1) % slides.length)
-              }
-              className="grid size-10 place-items-center rounded-full border border-white/30 text-white hover:bg-white/10"
-              aria-label="Next carousel slide"
-            >
-              <ChevronRight className="size-5" />
-            </button>
-          </div>
+          </aside>
         ) : null}
       </div>
     </section>

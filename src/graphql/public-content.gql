@@ -56,3 +56,14 @@ mutation RecordPublicWebsiteArticleView($hostname: String!, $articleId: ID!, $vi
 mutation RecordPublicWebsiteArticleShare($hostname: String!, $articleId: ID!, $visitorId: ID!, $platform: ArticleSharePlatform!) {
   recordPublicWebsiteArticleShare(hostname: $hostname, articleId: $articleId, visitorId: $visitorId, platform: $platform)
 }
+
+query PublicWebsiteFeaturedArticles($tenantId: ID!) {
+  publicWebsiteArticles(tenantId: $tenantId, featured: true, pageSize: 5) {
+    items {
+      id title slug summary featuredImageUrl
+      category { slug name translations { locale name } }
+      subcategorySlug
+      translations { locale title summary }
+    }
+  }
+}

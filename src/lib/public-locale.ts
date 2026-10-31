@@ -57,7 +57,7 @@ export function articleContent(article: PublicArticle, locale: Locale) {
 }
 
 export const articleHref = (
-  article: Pick<PublicArticleSummary, "category" | "subcategorySlug" | "slug">,
+  article: Pick<PublicArticleSummary, "subcategorySlug" | "slug"> & { category: { slug: string } },
   locale: Locale,
 ) =>
   hrefFor(

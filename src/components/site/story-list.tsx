@@ -37,8 +37,8 @@ export function StoryList({
                   alt=""
                   fill
                   unoptimized
-                  sizes="(max-width: 640px) 100vw, 30vw"
-                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  sizes="(max-width: 639px) 100vw, (max-width: 1720px) 30vw, 500px"
+                  className="object-cover object-center"
                 />
               ) : (
                 <span className="absolute inset-0 bg-linear-to-br from-blue-950 to-indigo-600" />

@@ -162,7 +162,7 @@
   .news-feature-stack-single { grid-template-rows: minmax(0, 1fr); }
   .news-popular-heading { @apply mb-3 flex min-h-10 items-center gap-3 text-xl font-extrabold tracking-tight sm:text-2xl; }
   .news-trending-list { @apply grid sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-1; }
-  .news-trending-item { @apply grid grid-cols-[100px_minmax(0,1fr)] gap-3 border-b border-slate-200 py-2.5 dark:border-slate-800 lg:grid-cols-[minmax(100px,34%)_minmax(0,1fr)] lg:gap-3.5; }
+  .news-trending-item { @apply grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-b border-slate-200 py-2.5 dark:border-slate-800 lg:gap-3.5; }
   .news-category-sections { @apply mt-9 grid gap-9; }
   .news-category-grid { @apply grid gap-2 sm:grid-cols-2 lg:grid-cols-4; }
   .news-empty { @apply grid min-h-[280px] place-content-center bg-slate-50 p-8 text-center text-slate-500 dark:bg-slate-900 dark:text-slate-300; }
@@ -172,7 +172,7 @@
   .story-card-feature { min-height: 230px; }
   .story-card-standard { min-height: 275px; }
   .story-card-image, .story-card-image img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-  .story-card-image img { object-fit: cover; transition: transform .45s ease; }
+  .story-card-image img { transition: transform .45s ease; }
   .story-card:hover .story-card-image img { transform: scale(1.035); }
   .story-card-placeholder { display: block; width: 100%; height: 100%; background: linear-gradient(135deg, #dbeafe, #64748b 65%, #172554); }
   .story-card-shade { position: absolute; inset: 24% 0 0; background: linear-gradient(180deg, transparent 0%, rgba(3, 13, 29, .52) 44%, rgba(3, 13, 29, .96) 100%); pointer-events: none; }
@@ -203,12 +203,6 @@
   .article-prose a { @apply font-medium text-blue-600 underline dark:text-blue-300; }
   .article-prose img { @apply my-6; }
   .article-prose code { @apply rounded bg-slate-100 px-1 py-0.5 text-sm dark:bg-slate-800; }
-}
-
-@keyframes site-slide-in {
-  /* Keep the hero transition brief so the headline remains readable. */
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 1100px) {
@@ -259,3 +253,30 @@ html[lang="km"] .font-extrabold { font-weight: 700; }
 html[lang="km"] h1,
 html[lang="km"] h2,
 html[lang="km"] h3 { line-height: 1.5; }
+
+/* Match the existing Top Headlines 32% column, measured against the common shell. */
+.news-home-shell { container-type: inline-size; }
+.article-thumbnail { width: calc(100cqw * .32); }
+@media (min-width: 768px) {
+  .article-thumbnail { width: calc(((100cqw - 28px) / 2.2 - 25px) * .32); }
+}
+@media (min-width: 1024px) {
+  .article-thumbnail { width: calc(((100cqw - 28px) / 2.85 - 25px) * .32); }
+}
+/* Share heading/content tracks only while the news columns sit side by side. */
+@media (min-width: 901px) {
+  .news-home-top-aligned { grid-template-rows: auto 1fr; row-gap: 12px; }
+  .news-home-top-aligned > section,
+  .news-home-top-aligned > aside {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    align-self: stretch;
+    min-width: 0;
+  }
+  .news-home-top-aligned > section > :first-child,
+  .news-home-top-aligned .news-popular-heading { margin-bottom: 0; }
+  .news-home-top-aligned .news-feature-grid,
+  .news-home-top-aligned .news-trending-list { align-self: start; }
+  .news-home-top-aligned .news-trending-item:first-child { padding-top: 0; }
+}

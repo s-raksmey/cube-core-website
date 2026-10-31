@@ -1,5 +1,6 @@
 import type {
   PublicWebsiteArticleQuery,
+  PublicWebsiteFeaturedArticlesQuery,
   PublicWebsiteArticlesQuery,
   PublicWebsiteCategoriesQuery,
   PublicWebsiteTagsQuery,
@@ -14,3 +15,5 @@ export type PublicArticle = NonNullable<
   PublicWebsiteArticleQuery["publicWebsiteArticle"]
 >;
 export type PublicTag = PublicWebsiteTagsQuery["publicWebsiteTags"][number];
+
+export type PublicFeaturedArticle = PublicWebsiteFeaturedArticlesQuery["publicWebsiteArticles"]["items"][number];

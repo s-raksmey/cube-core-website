@@ -8,7 +8,7 @@ import {
 } from "@/lib/public-locale";
 import type { PublicArticleCard } from "@/types/public-content";
 import { ArrowRight, CalendarDays } from "lucide-react";
-import Image from "next/image";
+import { ArticleImage } from "@/components/site/article-image";
 import Link from "next/link";
 
 type StoryCardProps = {
@@ -37,21 +37,16 @@ export function StoryCard({
   return (
     <article className={`story-card story-card-${size}`}>
       <Link href={href} className="story-card-image" aria-label={title}>
-        {article.featuredImageUrl ? (
-          <Image
-            src={article.featuredImageUrl}
-            alt=""
-            fill
-            unoptimized
+        <ArticleImage src={article.featuredImageUrl}
             sizes={
               size === "lead"
-                ? "(max-width: 640px) 100vw, 60vw"
-                : "(max-width: 640px) 100vw, 30vw"
+                ? "(max-width: 640px) 100vw, (max-width: 1023px) 60vw, (max-width: 1720px) 45vw, 760px"
+                : size === "feature"
+                  ? "(max-width: 640px) 100vw, (max-width: 1023px) 40vw, (max-width: 1720px) 30vw, 500px"
+                  : "(max-width: 640px) 100vw, (max-width: 1023px) 50vw, (max-width: 1720px) 26vw, 440px"
             }
           />
-        ) : (
-          <span className="story-card-placeholder" />
-        )}
+
       </Link>
       <div className="story-card-shade" />
       <span
