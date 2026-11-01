@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+import { hostnameFromHostHeader } from "@/lib/tenant-resolution";
 import "server-only";
 
 import {
@@ -69,12 +71,12 @@ export async function getTags(tenantId: string) {
 }
 
 export async function getArticles(
-  variables: PublicWebsiteArticlesQueryVariables,
+  variables: Omit<PublicWebsiteArticlesQueryVariables, "hostname">,
 ) {
   return (
     await request<PublicWebsiteArticlesQuery>(
       PublicWebsiteArticlesDocument,
-      variables,
+      { ...variables, hostname: hostnameFromHostHeader((await headers()).get("host")) ?? "" },
     )
   ).publicWebsiteArticles;
 }
@@ -135,5 +137,5 @@ export async function recordArticleShare(
 }
 
 export async function getFeaturedArticles(tenantId: string) {
-  return (await request<PublicWebsiteFeaturedArticlesQuery>(PublicWebsiteFeaturedArticlesDocument, { tenantId })).publicWebsiteArticles.items;
+  return (await request<PublicWebsiteFeaturedArticlesQuery>(PublicWebsiteFeaturedArticlesDocument, { tenantId, hostname: hostnameFromHostHeader((await headers()).get("host")) ?? "" })).publicWebsiteArticles.items;
 }

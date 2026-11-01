@@ -1,5 +1,6 @@
 "use client";
 
+import { SiteSearchDialog } from "@/components/site/site-search-dialog";
 import { SiteLanguageToggle } from "@/components/site/site-language-toggle";
 import {
   categoryName,
@@ -23,6 +24,7 @@ type Props = {
 export function SiteHeader({ name, logoUrl, categories, locale }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const searchTrigger = useRef<HTMLButtonElement>(null);
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeCategory = categories.find((item) => item.slug === activeSlug);
@@ -124,9 +126,13 @@ export function SiteHeader({ name, logoUrl, categories, locale }: Props) {
               className="site-icon-button"
               onClick={() => {
                 setSearchOpen((value) => !value);
+                setMenuOpen(false);
                 openCategory(null);
               }}
-              aria-label="Search"
+              ref={searchTrigger}
+              aria-haspopup="dialog"
+              aria-expanded={searchOpen}
+              aria-label={locale === "km" ? "ស្វែងរកព័ត៌មាន" : "Search"}
             >
               <Search className="size-4" />
             </button>
@@ -238,26 +244,6 @@ export function SiteHeader({ name, logoUrl, categories, locale }: Props) {
             </div>
           </div>
         ) : null}
-        {searchOpen ? (
-          <form
-            action={hrefFor("/search", locale)}
-            className="mx-auto flex max-w-[1720px] gap-2 border-t border-slate-200 px-4 py-3 dark:border-slate-700 sm:px-6 lg:px-8"
-          >
-            <input
-              autoFocus
-              name="q"
-              required
-              maxLength={160}
-              placeholder={
-                locale === "km" ? "ស្វែងរកព័ត៌មាន" : "Search articles"
-              }
-              className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-blue-600 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
-            />
-            <button className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white">
-              {locale === "km" ? "ស្វែងរក" : "Search"}
-            </button>
-          </form>
-        ) : null}
         {menuOpen ? (
           <nav
             className="max-h-[70vh] overflow-y-auto border-t border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900 lg:hidden"
@@ -300,6 +286,7 @@ export function SiteHeader({ name, logoUrl, categories, locale }: Props) {
           </nav>
         ) : null}
       </header>
+      <SiteSearchDialog open={searchOpen} onOpenChange={setSearchOpen} categories={categories} locale={locale} triggerRef={searchTrigger} />
       <div className="h-14 lg:h-16" aria-hidden="true" />
     </>
   );

@@ -11,8 +11,8 @@ query PublicWebsiteTags($tenantId: ID!) {
   }
 }
 
-query PublicWebsiteArticles($tenantId: ID!, $categorySlug: String, $subcategorySlug: String, $tagSlug: String, $search: String, $featured: Boolean, $breaking: Boolean, $page: Int, $pageSize: Int) {
-  publicWebsiteArticles(tenantId: $tenantId, categorySlug: $categorySlug, subcategorySlug: $subcategorySlug, tagSlug: $tagSlug, search: $search, featured: $featured, breaking: $breaking, page: $page, pageSize: $pageSize) {
+query PublicWebsiteArticles($tenantId: ID!, $hostname: String!, $categorySlug: String, $subcategorySlug: String, $tagSlug: String, $search: String, $featured: Boolean, $breaking: Boolean, $page: Int, $pageSize: Int) {
+  publicWebsiteArticles(tenantId: $tenantId, hostname: $hostname, categorySlug: $categorySlug, subcategorySlug: $subcategorySlug, tagSlug: $tagSlug, search: $search, featured: $featured, breaking: $breaking, page: $page, pageSize: $pageSize) {
     items {
       id title slug summary category { id slug name translations { locale name } }
       subcategorySlug subcategory { slug translations { locale name } }
@@ -57,8 +57,8 @@ mutation RecordPublicWebsiteArticleShare($hostname: String!, $articleId: ID!, $v
   recordPublicWebsiteArticleShare(hostname: $hostname, articleId: $articleId, visitorId: $visitorId, platform: $platform)
 }
 
-query PublicWebsiteFeaturedArticles($tenantId: ID!) {
-  publicWebsiteArticles(tenantId: $tenantId, featured: true, pageSize: 5) {
+query PublicWebsiteFeaturedArticles($tenantId: ID!, $hostname: String!) {
+  publicWebsiteArticles(tenantId: $tenantId, hostname: $hostname, featured: true, pageSize: 5) {
     items {
       id title slug summary featuredImageUrl
       category { slug name translations { locale name } }
